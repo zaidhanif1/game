@@ -1,6 +1,6 @@
+#include "Platform.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <Platform.h>
 
     
     Platform::Platform(float x, float y, float width, float height) 

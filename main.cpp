@@ -157,7 +157,7 @@ private:
 
 // Check collision between player and platform
 bool checkCollision(const Player& player, const Platform& platform) {
-    sf::FloatRect playerBounds = player.shape.getGlobalBounds();
+    sf::FloatRect playerBounds = player.getGlobalBounds();
     sf::FloatRect platformBounds = platform.shape.getGlobalBounds();
     
     // Manual AABB collision detection
@@ -169,7 +169,7 @@ bool checkCollision(const Player& player, const Platform& platform) {
 
 // Handle player-platform collision
 void handleCollision(Player& player, const Platform& platform) {
-    sf::FloatRect playerBounds = player.shape.getGlobalBounds();
+    sf::FloatRect playerBounds = player.getGlobalBounds();
     sf::FloatRect platformBounds = platform.shape.getGlobalBounds();
     
     float playerTop = playerBounds.position.y;
@@ -185,25 +185,25 @@ void handleCollision(Player& player, const Platform& platform) {
     // Check if player is above platform (landing on top)
     if (playerTop + playerHeight <= platformTop + 10 && 
         player.velocity.y > 0) {
-        player.shape.setPosition(sf::Vector2f(playerLeft, platformTop - playerHeight));
+        player.setPosition(sf::Vector2f(playerLeft, platformTop - playerHeight));
         player.velocity.y = 0;
         player.onGround = true;
     }
     // Check if player hits platform from below
     else if (playerTop >= platformTop + platformHeight - 10 && 
              player.velocity.y < 0) {
-        player.shape.setPosition(sf::Vector2f(playerLeft, platformTop + platformHeight));
+        player.setPosition(sf::Vector2f(playerLeft, platformTop + platformHeight));
         player.velocity.y = 0;
     }
     // Check side collisions
     else if (playerLeft < platformLeft + platformWidth / 2) {
         // Hit from left
-        player.shape.setPosition(sf::Vector2f(platformLeft - playerWidth, playerTop));
+        player.setPosition(sf::Vector2f(platformLeft - playerWidth, playerTop));
         player.velocity.x = 0;
     }
     else {
         // Hit from right
-        player.shape.setPosition(sf::Vector2f(platformLeft + platformWidth, playerTop));
+        player.setPosition(sf::Vector2f(platformLeft + platformWidth, playerTop));
         player.velocity.x = 0;
     }
 }
@@ -215,8 +215,13 @@ int main()
     window.setFramerateLimit(60);
     
     // Create player
-    Player player(100, 100);
-    player.loadFromFile("images/transparent.png");
+    Player player(600, 100);
+    // Load the spritesheet - adjust frameSize and frameCount based on your spritesheet
+    // Your spritesheet appears to have 36x36 pixel frames, 6 frames per row
+    player.loadFromFile("images/transparent.png", 
+                        sf::Vector2u(36, 36),  // Frame size (width, height)
+                        6,                      // Number of frames for idle animation (first row)
+                        8.0f);                  // Animation speed (frames per second)
     
     
     // Create platforms
@@ -226,16 +231,7 @@ int main()
     platforms.push_back(Platform(400, 350, 150, 20));   // Platform 2
     platforms.push_back(Platform(600, 250, 150, 20));   // Platform 3
     
-    // Create animated sprite
-    // Example: If your spritesheet has frames that are 64x64 pixels and 8 frames total
-    AnimatedSprite animatedSprite;
-    if (animatedSprite.loadFromFile("images/spritesheet.png", 
-                                     sf::Vector2u(64, 64),  // Frame size (width, height)
-                                     8,                     // Number of frames
-                                     8.0f)) {               // Animation speed (frames per second)
-        animatedSprite.setPosition(sf::Vector2f(400, 300)); // Set initial position
-        animatedSprite.setLoop(true);                        // Loop the animation
-    }
+   
 
     
     // Clock for delta time
@@ -275,8 +271,6 @@ int main()
         // Update player
         player.update(deltaTime);
         
-        // Update animated sprite
-        animatedSprite.update(deltaTime);
         
         // Check collisions with all platforms
         for (auto& platform : platforms) {
@@ -286,11 +280,12 @@ int main()
         }
         
         // Keep player in bounds (optional)
-        if (player.shape.getPosition().x < 0) {
-            player.shape.setPosition(sf::Vector2f(0, player.shape.getPosition().y));
+        sf::FloatRect bounds = player.getGlobalBounds();
+        if (player.getPosition().x < 0) {
+            player.setPosition(sf::Vector2f(0, player.getPosition().y));
         }
-        if (player.shape.getPosition().x + player.shape.getSize().x > 800) {
-            player.shape.setPosition(sf::Vector2f(800 - player.shape.getSize().x, player.shape.getPosition().y));
+        if (player.getPosition().x + bounds.size.x > 800) {
+            player.setPosition(sf::Vector2f(800 - bounds.size.x, player.getPosition().y));
         }
         
         // Clear screen
@@ -302,10 +297,9 @@ int main()
         }
         
         // Draw player
-        window.draw(player.shape);
+        window.draw(player.sprite);
         
         // Draw animated sprite
-        window.draw(animatedSprite.getSprite());
         
         
         // Display everything
