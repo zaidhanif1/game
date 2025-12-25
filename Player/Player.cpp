@@ -41,9 +41,9 @@ bool Player::loadFromFile(const std::string& filePath,
     
     // Set the initial texture rect to show the first frame
     sf::IntRect rect;
-    rect.position = sf::Vector2i(0, 0); // top left corner of the spritesheet
-    rect.size = sf::Vector2i(static_cast<int>(frameSize.x), static_cast<int>(frameSize.y)); // size of one frame
-    sprite.setTextureRect(rect); //show that frame
+    rect.position = sf::Vector2i(0, 0);
+    rect.size = sf::Vector2i(static_cast<int>(frameSize.x), static_cast<int>(frameSize.y));
+    sprite.setTextureRect(rect);
     
     return true;
 }
@@ -59,13 +59,13 @@ void Player::update(float deltaTime)
     sprite.move(sf::Vector2f(velocity.x * deltaTime, velocity.y * deltaTime));
     
     // Update animation
-    if (frameCount > 1) { // Only animate if multiple frames exist
-        frameTime += deltaTime; // accumulate how much time has passed
-        float timePerFrame = 0.5f / animationSpeed; // time per frame based on animation speed
+    if (frameCount > 1) {
+        frameTime += deltaTime;
+        float timePerFrame = 1.0f / animationSpeed;
         
-        if (frameTime >= timePerFrame) { //is it time to switch frames?
-            frameTime -= timePerFrame; //reset frame time but keep overflow
-            currentFrame = (currentFrame + 1) % frameCount; // advance to next frame
+        if (frameTime >= timePerFrame) {
+            frameTime -= timePerFrame;
+            currentFrame = (currentFrame + 1) % frameCount;
             
             // Calculate texture rect for current frame
             // Assuming horizontal spritesheet layout

@@ -9,3 +9,8 @@
         shape.setPosition(sf::Vector2f(x, y));
         shape.setFillColor(sf::Color::Green);
     }
+
+    void Platform::createPlatforms(std::vector<Platform> &platforms)
+    {
+        
+    }
