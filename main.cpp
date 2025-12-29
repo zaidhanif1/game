@@ -68,7 +68,7 @@ int main()
     // Create player
     Player player(100, 100);
     // Load the spritesheet - adjust frameSize and frameCount based on your spritesheet
-    player.loadFromFile("images/spritesheet.png", 
+    player.animation.loadFromFile("images/transparent.png", 
                         sf::Vector2u(36, 36),  // Frame size (width, height)
                         6,                      // Number of frames for idle animation
                         8.0f);                  // Animation speed (frames per second)
@@ -144,7 +144,7 @@ int main()
         }
         
         // Draw player
-        window.draw(player.sprite);
+        window.draw(player.animation.getSprite());
         
         // Display everything
         window.display();

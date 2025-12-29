@@ -1,22 +1,15 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include "../Animation/Animation.h"
+
 
 class Player 
 {
 public:
-    // Texture must be stored (sprite references it)
-    sf::Texture texture;
-    sf::Sprite sprite;
+    Animation animation;      // Handles sprite, texture, and animation
     sf::Vector2f velocity;
     bool onGround;
-    
-    // Animation properties
-    sf::Vector2u frameSize;
-    unsigned int frameCount;
-    unsigned int currentFrame;
-    float animationSpeed;
-    float frameTime;
     
     // Constructor - takes initial position
     Player(float x, float y);
