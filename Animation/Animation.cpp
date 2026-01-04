@@ -42,12 +42,12 @@ void Animation::update(float deltaTime)
 {
     if (!isPlaying || frameCount == 0 || !textureLoaded) return;
     
-    frameTime += deltaTime;
-    float timePerFrame = 1.0f / fps;
+    frameTime += deltaTime; //add the time that has passed since the last frame
+    float timePerFrame = 1.0f / fps; //calculate how long each frame should last
     
-    if (frameTime >= timePerFrame) {
-        frameTime -= timePerFrame;
-        currentFrame++;
+    if (frameTime >= timePerFrame) { //if enough time has passed, switch to the next frame
+        frameTime -= timePerFrame; //subtract the time for one frame
+        currentFrame++; //move to the next frame
         
         if (currentFrame >= frameCount) {
             if (loop) {

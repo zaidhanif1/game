@@ -4,60 +4,9 @@
 #include <optional>
 #include "Player/Player.h"
 #include "Platform/Platform.h"
+#include "Physics/Collision.h"
 
 
-// Check collision between player and platform
-bool checkCollision(const Player& player, const Platform& platform) {
-    sf::FloatRect playerBounds = player.getGlobalBounds();
-    sf::FloatRect platformBounds = platform.shape.getGlobalBounds();
-    
-    // Manual AABB collision detection
-    return (playerBounds.position.x < platformBounds.position.x + platformBounds.size.x &&
-            playerBounds.position.x + playerBounds.size.x > platformBounds.position.x &&
-            playerBounds.position.y < platformBounds.position.y + platformBounds.size.y &&
-            playerBounds.position.y + playerBounds.size.y > platformBounds.position.y);
-}
-
-// Handle player-platform collision
-void handleCollision(Player& player, const Platform& platform) {
-    sf::FloatRect playerBounds = player.getGlobalBounds();
-    sf::FloatRect platformBounds = platform.shape.getGlobalBounds();
-    
-    float playerTop = playerBounds.position.y;
-    float playerLeft = playerBounds.position.x;
-    float playerHeight = playerBounds.size.y;
-    float playerWidth = playerBounds.size.x;
-    
-    float platformTop = platformBounds.position.y;
-    float platformLeft = platformBounds.position.x;
-    float platformHeight = platformBounds.size.y;
-    float platformWidth = platformBounds.size.x;
-    
-    // Check if player is above platform (landing on top)
-    if (playerTop + playerHeight <= platformTop + 10 && 
-        player.velocity.y > 0) {
-        player.setPosition(sf::Vector2f(playerLeft, platformTop - playerHeight));
-        player.velocity.y = 0;
-        player.onGround = true;
-    }
-    // Check if player hits platform from below
-    else if (playerTop >= platformTop + platformHeight - 10 && 
-             player.velocity.y < 0) {
-        player.setPosition(sf::Vector2f(playerLeft, platformTop + platformHeight));
-        player.velocity.y = 0;
-    }
-    // Check side collisions
-    else if (playerLeft < platformLeft + platformWidth / 2) {
-        // Hit from left
-        player.setPosition(sf::Vector2f(platformLeft - playerWidth, playerTop));
-        player.velocity.x = 0;
-    }
-    else {
-        // Hit from right
-        player.setPosition(sf::Vector2f(platformLeft + platformWidth, playerTop));
-        player.velocity.x = 0;
-    }
-}
 
 int main()
 {
@@ -77,16 +26,19 @@ int main()
     // Create platforms
     std::vector<Platform> platforms;
     platforms.push_back(Platform(0, 550, 800, 50));      // Ground
-    platforms.push_back(Platform(200, 450, 150, 20));    // Platform 1
-    platforms.push_back(Platform(400, 350, 150, 20));    // Platform 2
-    platforms.push_back(Platform(600, 250, 150, 20));    // Platform 3
+    platforms.push_back(Platform(200, 600, 150, 20));    // Platform 1
+    platforms.push_back(Platform(400, 500, 150, 20));    // Platform 2
+    platforms.push_back(Platform(500, 400, 150, 20));    // Platform 3
 
     
+    // Collision handler
+    Collision collisionHandler;
+
     // Clock for delta time
     sf::Clock clock;
     
     // Game loop
-    while (window.isOpen())
+    while ( window.isOpen() )
     {
         // Calculate delta time
         float deltaTime = clock.restart().asSeconds();
@@ -121,9 +73,8 @@ int main()
         
         // Check collisions with all platforms
         for (auto& platform : platforms) {
-            if (checkCollision(player, platform)) {
-                handleCollision(player, platform);
-            }
+            collisionHandler.handleCollision(player, platform);
+            
         }
         
         // Keep player in bounds (optional)
