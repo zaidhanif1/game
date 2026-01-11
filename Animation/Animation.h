@@ -123,6 +123,13 @@ public:
      * @endcode
      */
     void setScale(const sf::Vector2f& scale);
+    
+    /**
+     * @brief Sets the origin of the sprite (for proper flipping/rotation)
+     * 
+     * @param origin The origin point relative to the sprite's local bounds
+     */
+    void setOrigin(const sf::Vector2f& origin);
 
     /**
      * @brief Gets the underlying sprite for rendering
@@ -167,7 +174,6 @@ public:
     
     /// @}
 
-private:
     /**
      * @brief Updates the texture rectangle to display the current frame
      * 

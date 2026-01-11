@@ -99,9 +99,9 @@ void Animation::setfps(float speed)
 }
 
 // Set whether to loop
-void Animation::setLoop(bool shouldLoop) 
+void Animation::setLoop(bool l) 
 {
-    loop = shouldLoop;
+    loop = l;
 }
 
 // Set position
@@ -129,6 +129,15 @@ void Animation::setScale(const sf::Vector2f& scale)
     }
 }
 
+// Set origin (for proper flipping/rotation)
+void Animation::setOrigin(const sf::Vector2f& origin) 
+{
+    if (sprite.has_value()) 
+    {
+        sprite->setOrigin(origin);
+    }
+}
+
 // Get the underlying sprite for drawing
 const sf::Sprite& Animation::getSprite() const 
 {
@@ -142,6 +151,11 @@ void Animation::updateTextureRect()
     
     unsigned int framesPerRow = texture.getSize().x / frameSize.x;
     if (framesPerRow == 0) return;  // Guard against division by zero
+    
+    // Clamp currentFrame to valid range to prevent blank/garbage frames
+    if (frameCount > 0 && currentFrame >= frameCount) {
+        currentFrame = frameCount - 1;
+    }
     
     unsigned int row = currentFrame / framesPerRow;
     unsigned int col = currentFrame % framesPerRow;

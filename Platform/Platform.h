@@ -5,7 +5,7 @@
 class Platform
 {
     public:
-        Platform(float x, float y, float width, float height);
+        Platform(float x, float y, float width, float height, sf::Color color);
         sf::RectangleShape shape;
         static void createPlatforms(std::vector<Platform>& platforms);
     };

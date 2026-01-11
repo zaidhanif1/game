@@ -5,6 +5,7 @@
 #include "Player/Player.h"
 #include "Platform/Platform.h"
 #include "Physics/Collision.h"
+#include <iostream>
 
 
 
@@ -12,24 +13,18 @@ int main()
 {
     // Create window
     sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "2D Platformer - SFML");
-    window.setFramerateLimit(60);
-    
+    window.setFramerateLimit(75);
     // Create player
-    Player player(100, 100);
-    // Load the spritesheet - adjust frameSize and frameCount based on your spritesheet
-    player.animation.loadFromFile("images/transparent.png", 
-                        sf::Vector2u(36, 36),  // Frame size (width, height)
-                        6,                      // Number of frames for idle animation
-                        8.0f);                  // Animation speed (frames per second)
-    
-    
+    Player player(20, 550);
+    // Load all animations once at startup
+    if (!player.loadAnimations()) 
+    {
+        std::cerr << "Failed to load player animations!" << std::endl;
+        return -1;
+    }
     // Create platforms
     std::vector<Platform> platforms;
-    platforms.push_back(Platform(0, 550, 800, 50));      // Ground
-    platforms.push_back(Platform(200, 600, 150, 20));    // Platform 1
-    platforms.push_back(Platform(400, 500, 150, 20));    // Platform 2
-    platforms.push_back(Platform(500, 400, 150, 20));    // Platform 3
-
+    Platform::createPlatforms(platforms);
     
     // Collision handler
     Collision collisionHandler;
@@ -51,31 +46,41 @@ int main()
         }
         
         // Handle input
-        float moveSpeed = 300.0f;
+        
         player.velocity.x = 0; // Reset horizontal velocity
         
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || 
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) {
-            player.velocity.x = -moveSpeed;
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) 
+            {
+            player.velocity.x = -player.RUN_SPEED;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || 
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) {
-            player.velocity.x = moveSpeed;
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) 
+        {
+            player.velocity.x = player.RUN_SPEED;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
-            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) {
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) 
+        {
             player.jump();
         }
         
-        // Update player
+        // Update player (position, velocity, etc.)
         player.update(deltaTime);
         
         // Check collisions with all platforms
-        for (auto& platform : platforms) {
+        for (auto& platform : platforms) 
+        {
             collisionHandler.handleCollision(player, platform);
-            
         }
+        
+        // Update animation state AFTER collision detection
+        // This ensures onGround is correctly set before determining animation
+        player.updateAnimationState();
+        
+        // Update the animation AFTER state is determined to avoid flashing
+        player.updateAnimation(deltaTime);
         
         // Keep player in bounds (optional)
         sf::FloatRect bounds = player.getGlobalBounds();
@@ -94,8 +99,8 @@ int main()
             window.draw(platform.shape);
         }
         
-        // Draw player
-        window.draw(player.animation.getSprite());
+        // Draw player (automatically uses correct animation based on state)
+        window.draw(player.getSprite());
         
         // Display everything
         window.display();
