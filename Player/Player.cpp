@@ -9,7 +9,7 @@ Player::Player(float x, float y)
       facingRight(true),
       currentAnimation(nullptr)
 {
-    // Set initial position for all animations
+    // set initial position for all animations
     idleAnimation.setPosition(sf::Vector2f(x, y));
     walkAnimation.setPosition(sf::Vector2f(x, y));
     runAnimation.setPosition(sf::Vector2f(x, y));
@@ -22,10 +22,10 @@ bool Player::loadAnimations(const std::string& basePath)
     frameSize.x = frameSizeX;
     frameSize.y = frameSizeY;
     
-    // Get the initial position (set in constructor)
+    // get the initial position (set in constructor)
     sf::Vector2f initialPos = idleAnimation.getPosition();
     
-    // Load all animations
+    // load all animations
     success &= loadAnimation(idleAnimation, basePath + "IDLE.png", frameSize, 6, 8.0f);
     success &= loadAnimation(walkAnimation, basePath + "WALK.png", frameSize, 6, 12.0f);
     success &= loadAnimation(runAnimation, basePath + "RUN.png", frameSize, 6, 15.0f);
@@ -35,13 +35,13 @@ bool Player::loadAnimations(const std::string& basePath)
     walkAnimation.setLoop(true);
     runAnimation.setLoop(true);
     jumpAnimation.setLoop(true);
-    
-    
-    // Set initial animation
+
+
+    // set initial animation
     currentAnimation = &idleAnimation;
     currentState = PlayerState::IDLE;
     
-    // Start the idle animation
+    // start the idle animation
     idleAnimation.play();
     
     return success;
@@ -52,15 +52,15 @@ bool Player::loadAnimation(Animation& animation, const std::string& filePath,
                            unsigned int frameCount, 
                            float fps)
 {
-    // Get current position before loading (if animation was already positioned)
+    // get current position before loading (if animation was already positioned)
     sf::Vector2f oldPos = animation.getPosition();
     if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
     {
         return false;
     }
-    // Set origin to center of frame for proper flipping
+    // set origin to center of frame for proper flipping
     animation.setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
-    // Adjust position: if old position was top-left, new position (center) should be offset
+    // adjust position: if old position was top-left, new position (center) should be offset
     animation.setPosition(sf::Vector2f(oldPos.x + frameSize.x / 2.0f, oldPos.y + frameSize.y / 2.0f));
     
     return true;
@@ -68,77 +68,79 @@ bool Player::loadAnimation(Animation& animation, const std::string& filePath,
 
 void Player::update(float deltaTime) 
 {
-    // Apply gravity
+    // apply gravity
     if (!onGround) 
     {
         velocity.y += GRAVITY * deltaTime;
     }
     
-    // Get current position (center point, since origin is at center)
+    // get current position (center point, since origin is at center)
     sf::Vector2f pos = currentAnimation ? currentAnimation->getPosition() : sf::Vector2f(0, 0);
     
-    // Update position based on velocity
+    // update position based on velocity
     pos.x += velocity.x * deltaTime;
     pos.y += velocity.y * deltaTime;
     
-    // Handle sprite flipping based on direction (apply to ALL animations for consistency)
+    // handle sprite flipping based on direction (apply to ALL animations for consistency)
     bool newFacingRight = facingRight;
-    if (velocity.x > 0.1f) {
+    if (velocity.x > 0.1f) 
+    {
         newFacingRight = true;
-    } else if (velocity.x < -0.1f) {
+    } 
+    else if (velocity.x < -0.1f) 
+    {
         newFacingRight = false;
     }
     
-    // Only update scale if direction changed (to avoid constant updates)
-    if (newFacingRight != facingRight) {
+    // only update scale if direction changed (to avoid constant updates)
+    if (newFacingRight != facingRight) 
+    {
         facingRight = newFacingRight;
         sf::Vector2f scale = facingRight ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
         
-        // Apply scale to ALL animations to keep them in sync
+        // apply scale to ALL animations to keep them in sync
         idleAnimation.setScale(scale);
         walkAnimation.setScale(scale);
         runAnimation.setScale(scale);
         jumpAnimation.setScale(scale);
     }
     
-    // Update all animation positions (after scale is set, so they all align)
-    // Since origin is at center, position represents the center point
+    // update all animation positions (after scale is set, so they all align)
+    // since origin is at center, position represents the center point
     idleAnimation.setPosition(pos);
     walkAnimation.setPosition(pos);
     runAnimation.setPosition(pos);
     jumpAnimation.setPosition(pos);
     
-    // NOTE: Animation update moved to updateAnimation() method
-    // This must be called AFTER updateAnimationState() to avoid flashing
-    
-    // Reset onGround - collision system will set it to true if player is on a platform
+    // reset onGround - collision system will set it to true if player is on a platform
     onGround = false;
 }
 
 void Player::updateAnimation(float deltaTime)
 {
-    // Update the current animation - call this AFTER updateAnimationState()
-    if (currentAnimation) {
+    // update the current animation - call this AFTER updateAnimationState()
+    if (currentAnimation) 
+    {
         currentAnimation->update(deltaTime);
     }
 }
 
 void Player::updateAnimationState()
 {
-    // Determine which animation should be playing based on player state
+    // determine which animation should be playing based on player state
     PlayerState newState = currentState;
     
-    // Priority order: JUMP > RUN > WALK > IDLE
+    // priority order: JUMP > RUN > WALK > IDLE
     if (!onGround) 
     {
         newState = PlayerState::JUMP;
     } 
     else if (std::abs(velocity.x) > 250.0f) 
-    {  // RUN threshold (moveSpeed is 300, so this catches running)
+    {  // run threshold (moveSpeed is 300, so this catches running)
         newState = PlayerState::RUN;
     } 
     else if (std::abs(velocity.x) > 10.0f) 
-    {  // WALK threshold - increased to prevent flickering
+    {  // walk threshold 
         newState = PlayerState::WALK;
     } 
     else 
@@ -146,7 +148,7 @@ void Player::updateAnimationState()
         newState = PlayerState::IDLE;
     }
     
-    // Only switch if state actually changed
+    // only switch if state actually changed
     if (newState != currentState) {
         setAnimation(newState);
     }
@@ -154,15 +156,17 @@ void Player::updateAnimationState()
 
 void Player::setAnimation(PlayerState newState)
 {
-    // Don't do anything if already in this state
-    if (newState == currentState) {
+    // don't do anything if already in this state
+    if (newState == currentState) 
+    {
         return;
     }
     
     currentState = newState;
     
-    // Switch to new animation
-    switch (newState) {
+    // switch to new animation
+    switch (newState) 
+    {
         case PlayerState::IDLE:
             currentAnimation = &idleAnimation;
             break;
@@ -177,9 +181,10 @@ void Player::setAnimation(PlayerState newState)
             break;
     }
     
-    // Reset the animation to start fresh - this prevents showing invalid/blank frames
+    // reset the animation to start fresh - this prevents showing invalid/blank frames
     // when switching between animations with different frame counts
-    if (currentAnimation) {
+    if (currentAnimation) 
+    {
         currentAnimation->currentFrame = 0;
         currentAnimation->frameTime = 0.0f;
         currentAnimation->updateTextureRect();
@@ -189,7 +194,8 @@ void Player::setAnimation(PlayerState newState)
 
 void Player::jump() 
 {
-    if (onGround) {
+    if (onGround) 
+    {
         velocity.y = -470.0f;
         onGround = false;
     }
@@ -206,7 +212,8 @@ sf::FloatRect Player::getGlobalBounds() const
 
 sf::Vector2f Player::getPosition() const 
 {
-    if (currentAnimation) {
+    if (currentAnimation) 
+    {
         return currentAnimation->getPosition();
     }
     return sf::Vector2f(0, 0);
@@ -222,9 +229,10 @@ void Player::setPosition(const sf::Vector2f& pos)
 
 const sf::Sprite& Player::getSprite() const
 {
-    if (currentAnimation) {
+    if (currentAnimation) 
+    {
         return currentAnimation->getSprite();
     }
-    // Fallback to idle if somehow currentAnimation is null
+    // fallback to idle if somehow currentAnimation is null
     return idleAnimation.getSprite();
 }

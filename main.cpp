@@ -11,48 +11,48 @@
 
 int main()
 {
-    // Create window
-    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "2D Platformer - SFML");
+    // create window
+    sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game");
     window.setFramerateLimit(75);
-    // Create player
+    // create player
     Player player(20, 550);
-    // Load all animations once at startup
+    // load all animations once at startup
     if (!player.loadAnimations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
         return -1;
     }
-    // Create platforms
+    // create platforms
     std::vector<Platform> platforms;
     Platform::createPlatforms(platforms);
     
-    // Collision handler
+    // collision handler from physics/
     Collision collisionHandler;
 
-    // Clock for delta time
+    // clock for delta time
     sf::Clock clock;
     
-    // Game loop
+    // enter game loop
     while ( window.isOpen() )
     {
-        // Calculate delta time
+        // calculate delta time
         float deltaTime = clock.restart().asSeconds();
         
-        // Handle events
+        // handle close event
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
         }
         
-        // Handle input
+        // handle user input
         
-        player.velocity.x = 0; // Reset horizontal velocity
+        player.velocity.x = 0; // reset horizontal velocity
         
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) 
             {
-            player.velocity.x = -player.RUN_SPEED;
+            player.velocity.x = -player.RUN_SPEED; 
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) 
@@ -66,43 +66,45 @@ int main()
             player.jump();
         }
         
-        // Update player (position, velocity, etc.)
+        // update player (position, velocity, etc.)
         player.update(deltaTime);
         
-        // Check collisions with all platforms
+        // check collisions with all platforms
         for (auto& platform : platforms) 
         {
             collisionHandler.handleCollision(player, platform);
         }
         
-        // Update animation state AFTER collision detection
-        // This ensures onGround is correctly set before determining animation
+        // update animation state AFTER collision detection
+        // this ensures onGround is correctly set before determining animation
         player.updateAnimationState();
         
-        // Update the animation AFTER state is determined to avoid flashing
+        // update the animation AFTER state is determined to avoid flashing
         player.updateAnimation(deltaTime);
         
-        // Keep player in bounds (optional)
+        // keep player in bounds (optional)
         sf::FloatRect bounds = player.getGlobalBounds();
-        if (player.getPosition().x < 0) {
+        if (player.getPosition().x < 0) 
+        {
             player.setPosition(sf::Vector2f(0, player.getPosition().y));
         }
-        if (player.getPosition().x + bounds.size.x > 800) {
+        if (player.getPosition().x + bounds.size.x > 800) 
+        {
             player.setPosition(sf::Vector2f(800 - bounds.size.x, player.getPosition().y));
         }
         
-        // Clear screen
-        window.clear(sf::Color(135, 206, 235)); // Sky blue background
-        
-        // Draw platforms
+        // clear screen
+        window.clear(sf::Color(135, 206, 235)); // random blue sky blue background (need to change to var later)
+         
+        // draw platforms
         for (auto& platform : platforms) {
             window.draw(platform.shape);
         }
         
-        // Draw player (automatically uses correct animation based on state)
+        // draw player (automatically uses correct animation based on state)
         window.draw(player.getSprite());
         
-        // Display everything
+        // display everything
         window.display();
     }
     
