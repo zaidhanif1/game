@@ -12,9 +12,9 @@
 
     void Platform::createPlatforms(std::vector<Platform> &platforms)
     {
-        platforms.push_back(Platform(0, 550, 800, 50, sf::Color::Green));      // ground
-        platforms.push_back(Platform(200, 450, 150, 20, sf::Color::Black));    // platform 1
-        platforms.push_back(Platform(400, 350, 150, 20, sf::Color::Black));    // platform 2
-        platforms.push_back(Platform(600, 250, 150, 20, sf::Color::Black));    // platform 3
+        platforms.push_back(Platform(0, 550, 800, 50, sf::Color::Green));      // Ground
+        platforms.push_back(Platform(200, 450, 150, 20, sf::Color::Black));    // Platform 1
+        platforms.push_back(Platform(400, 350, 150, 20, sf::Color::Black));    // Platform 2
+        platforms.push_back(Platform(600, 250, 150, 20, sf::Color::Black));    // Platform 3
 
     }

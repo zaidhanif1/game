@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-// check collision and get intersection using findIntersection
+// Check collision and get intersection using findIntersection
 std::optional<sf::FloatRect> Collision::getIntersection(const Player& player, const Platform& platform) 
 {
     sf::FloatRect playerBounds = player.getGlobalBounds();
@@ -12,17 +12,17 @@ std::optional<sf::FloatRect> Collision::getIntersection(const Player& player, co
     return playerBounds.findIntersection(platformBounds);
 }
 
-// handle player/platform collision using intersection data
+// Handle player/platform collision using intersection data
 void Collision::handleCollision(Player& player, const Platform& platform) 
 {
     std::optional<sf::FloatRect> intersection = getIntersection(player, platform);
     
     if (!intersection.has_value()) 
     {
-        return; // no collision, return early
+        return; // No collision, return early
     }
     
-    // print the intersection values
+    // Print the intersection values
     sf::FloatRect overlap = intersection.value();
    
 
@@ -30,16 +30,16 @@ void Collision::handleCollision(Player& player, const Platform& platform)
     sf::FloatRect playerBounds = player.getGlobalBounds();
     sf::FloatRect platformBounds = platform.shape.getGlobalBounds();
     
-    // determine collision direction based on intersection size
-    // if overlap is wider than it is tall, it's a vertical collision (intersection rectangle is wider than tall)
-    // if overlap is taller than it is wide, it's a horizontal collision (intersection rectangle is taller than wide)
+    // Determine collision direction based on intersection size
+    // If overlap is wider than it is tall, it's a vertical collision (intersection rectangle is wider than tall)
+    // If overlap is taller than it is wide, it's a horizontal collision (intersection rectangle is taller than wide)
     
     if (overlap.size.x < overlap.size.y) 
     {
-        // horizontal collision (left/right)
+        // Horizontal collision (left/right)
         if (playerBounds.position.x < platformBounds.position.x) 
         {
-            // player hit from the left - push player left
+            // Player hit from the left - push player left
             player.setPosition(
                 sf::Vector2f
                 (
@@ -50,7 +50,7 @@ void Collision::handleCollision(Player& player, const Platform& platform)
         } 
         else 
         {
-            // player hit from the right - push player right
+            // Player hit from the right - push player right
             player.setPosition(
                 sf::Vector2f
                 (
@@ -63,12 +63,12 @@ void Collision::handleCollision(Player& player, const Platform& platform)
     } 
     else 
     {
-        // vertical collision (top/bottom)
+        // Vertical collision (top/bottom)
         if (playerBounds.position.y < platformBounds.position.y) 
         {
-            // player landed on top of platform
-            // leave a tiny overlap (0.1 pixels) so collision continues to detect ground next frame
-            // this prevents onGround from flickering between true/false
+            // Player landed on top of platform
+            // Leave a tiny overlap (0.1 pixels) so collision continues to detect ground next frame
+            // This prevents onGround from flickering between true/false
             player.setPosition(
                 sf::Vector2f
                 (
@@ -81,7 +81,7 @@ void Collision::handleCollision(Player& player, const Platform& platform)
         } 
         else 
         {
-            // player hit platform from below
+            // Player hit platform from below
             player.setPosition(
                 sf::Vector2f
                 (

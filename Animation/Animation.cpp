@@ -42,20 +42,18 @@ void Animation::update(float deltaTime)
 {
     if (!isPlaying || frameCount == 0 || !textureLoaded) return;
     
-    frameTime += deltaTime; //add the time that has passed since the last frame
-    float timePerFrame = 1.0f / fps; //calculate how long each frame should last
+    float timePerFrame = 1.0f / fps; // Calculate how long each frame should last
+    frameTime += deltaTime; // Add the time that has passed since the last frame
     
-    if (frameTime >= timePerFrame) { //if enough time has passed, switch to the next frame
-        frameTime -= timePerFrame; //subtract the time for one frame
-        currentFrame++; //move to the next frame
+    if (frameTime >= timePerFrame) 
+    { 
+        // If enough time has passed, switch to the next frame
+        frameTime -= timePerFrame; // Subtract the time for one frame
+        currentFrame++; // Move to the next frame
         
-        if (currentFrame >= frameCount) {
-            if (loop) {
+        if (currentFrame >= frameCount) 
+        {
                 currentFrame = 0;
-            } else {
-                currentFrame = frameCount - 1;
-                isPlaying = false;
-            }
         }
         
         updateTextureRect();
@@ -65,7 +63,8 @@ void Animation::update(float deltaTime)
 // Set the current frame manually
 void Animation::setFrame(unsigned int frame) 
 {
-    if (frame < frameCount) {
+    if (frame < frameCount) 
+    {
         currentFrame = frame;
         updateTextureRect();
     }
@@ -107,7 +106,8 @@ void Animation::setLoop(bool l)
 // Set position
 void Animation::setPosition(const sf::Vector2f& position) 
 {
-    if (sprite.has_value()) {
+    if (sprite.has_value()) 
+    {
         sprite->setPosition(position);
     }
 }
@@ -115,7 +115,8 @@ void Animation::setPosition(const sf::Vector2f& position)
 // Get position
 sf::Vector2f Animation::getPosition() const 
 {
-    if (sprite.has_value()) {
+    if (sprite.has_value()) 
+    {
         return sprite->getPosition();
     }
     return sf::Vector2f(0, 0);
@@ -124,7 +125,8 @@ sf::Vector2f Animation::getPosition() const
 // Set scale (useful for flipping horizontally)
 void Animation::setScale(const sf::Vector2f& scale) 
 {
-    if (sprite.has_value()) {
+    if (sprite.has_value()) 
+    {
         sprite->setScale(scale);
     }
 }
@@ -141,6 +143,10 @@ void Animation::setOrigin(const sf::Vector2f& origin)
 // Get the underlying sprite for drawing
 const sf::Sprite& Animation::getSprite() const 
 {
+    if (!sprite.has_value()) 
+    {
+        throw std::runtime_error("Sprite not initialized. Load a texture first.");
+    }
     return sprite.value();
 }
 
@@ -153,7 +159,8 @@ void Animation::updateTextureRect()
     if (framesPerRow == 0) return;  // Guard against division by zero
     
     // Clamp currentFrame to valid range to prevent blank/garbage frames
-    if (frameCount > 0 && currentFrame >= frameCount) {
+    if (frameCount > 0 && currentFrame >= frameCount)
+     {
         currentFrame = frameCount - 1;
     }
     
