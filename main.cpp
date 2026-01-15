@@ -17,7 +17,7 @@ int main()
     // Create player
     Player player(20, 550);
     // Load all animations once at startup
-    if (!player.loadAnimations()) 
+    if (!player.loadAllAnimations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
         return -1;
@@ -51,7 +51,7 @@ int main()
         
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) 
-            {
+        {
             player.velocity.x = -player.RUN_SPEED; 
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || 
@@ -82,15 +82,14 @@ int main()
         // Update the animation AFTER state is determined to avoid flashing
         player.updateAnimation(deltaTime);
         
-        // Keep player in bounds (optional)
-        sf::FloatRect bounds = player.getGlobalBounds();
-        if (player.getPosition().x < 0) 
+        sf::Vector2f playerPos = player.getPosition();
+        if (playerPos.x < 0) 
         {
-            player.setPosition(sf::Vector2f(0, player.getPosition().y));
+            player.setPosition(sf::Vector2f(0, playerPos.y));
         }
-        if (player.getPosition().x + bounds.size.x > 800) 
+        if (playerPos.x > 800) 
         {
-            player.setPosition(sf::Vector2f(800 - bounds.size.x, player.getPosition().y));
+            player.setPosition(sf::Vector2f(800, playerPos.y));
         }
         
         // Clear screen

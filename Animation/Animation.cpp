@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Animation.h"
 #include <string>
+#include <iostream>
 
 // In SFML 3.0, Sprite has no default constructor - it needs a texture.
 // We use std::optional to handle this, but the header declares sf::Sprite directly.
@@ -19,7 +20,9 @@ bool Animation::loadFromFile(const std::string& filename,
                              unsigned int frameCount,
                              float fps) 
 {
-    if (!texture.loadFromFile(filename)) {
+    if (!texture.loadFromFile(filename)) 
+    {
+        std::cout << "Failed to load texture from file: " << filename << std::endl;
         return false;
     }
     
@@ -97,11 +100,7 @@ void Animation::setfps(float speed)
     fps = speed;
 }
 
-// Set whether to loop
-void Animation::setLoop(bool l) 
-{
-    loop = l;
-}
+
 
 // Set position
 void Animation::setPosition(const sf::Vector2f& position) 

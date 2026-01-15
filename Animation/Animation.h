@@ -90,12 +90,6 @@ public:
      */
     void setfps(float speed);
 
-    /**
-     * @brief Sets whether the animation should loop
-     * 
-     * @param shouldLoop true to loop continuously, false to stop at last frame
-     */
-    void setLoop(bool shouldLoop);
 
     /**
      * @brief Sets the position of the animation sprite

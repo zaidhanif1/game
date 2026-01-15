@@ -125,7 +125,7 @@ public:
      * @note Expected files: IDLE.png, WALK.png, RUN.png, JUMP.png
      * @note Sets all animations to loop and starts the idle animation
      */
-    bool loadAnimations(const std::string& basePath = "assets/with_outline/");
+    bool loadAllAnimations(const std::string& basePath = "assets/with_outline/");
     
     /**
      * @brief Loads a single animation with custom parameters

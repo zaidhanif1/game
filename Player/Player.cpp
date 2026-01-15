@@ -9,33 +9,20 @@ Player::Player(float x, float y)
       facingRight(true),
       currentAnimation(nullptr)
 {
-    // Set initial position for all animations
-    idleAnimation.setPosition(sf::Vector2f(x, y));
-    walkAnimation.setPosition(sf::Vector2f(x, y));
-    runAnimation.setPosition(sf::Vector2f(x, y));
-    jumpAnimation.setPosition(sf::Vector2f(x, y));
 }
-
-bool Player::loadAnimations(const std::string& basePath)
+bool Player::loadAllAnimations(const std::string& basePath)
 {
     bool success = true;
-    frameSize.x = frameSizeX;
-    frameSize.y = frameSizeY;
-    
-    // Get the initial position (set in constructor)
-    sf::Vector2f initialPos = idleAnimation.getPosition();
+    this->frameSize.x = frameSizeX;
+    this->frameSize.y = frameSizeY;
     
     // Load all animations
-    success &= loadAnimation(idleAnimation, basePath + "IDLE.png", frameSize, 6, 8.0f);
-    success &= loadAnimation(walkAnimation, basePath + "WALK.png", frameSize, 6, 12.0f);
-    success &= loadAnimation(runAnimation, basePath + "RUN.png", frameSize, 6, 15.0f);
-    success &= loadAnimation(jumpAnimation, basePath + "JUMP.png", frameSize, 5, 10.0f);
+    success &= loadAnimation(idleAnimation, basePath + "IDLE.png", this->frameSize, 6, 8.0f);
+    success &= loadAnimation(walkAnimation, basePath + "WALK.png", this->frameSize, 6, 12.0f);
+    success &= loadAnimation(runAnimation, basePath + "RUN.png", this->frameSize, 6, 15.0f);
+    success &= loadAnimation(jumpAnimation, basePath + "JUMP.png", this->frameSize, 5, 10.0f);
     
-    idleAnimation.setLoop(true);
-    walkAnimation.setLoop(true);
-    runAnimation.setLoop(true);
-    jumpAnimation.setLoop(true);
-
+    
 
     // Set initial animation
     currentAnimation = &idleAnimation;
