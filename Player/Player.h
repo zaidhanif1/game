@@ -92,9 +92,13 @@ public:
     
     /** @brief Width of each frame in pixels (96 pixels) */
     int frameSizeX = 96;
-    
     /** @brief Height of each frame in pixels (70 pixels) */
     int frameSizeY = 70;
+
+    /** @brief Width of the collision box in pixels (70 pixels) */
+    int collisionSizeX = 70;
+    /** @brief Height of the collision box in pixels (50 pixels) */
+    int collisionSizeY = 50;
     
     /// @}
     
