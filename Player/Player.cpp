@@ -41,6 +41,7 @@ bool Player::loadAnimation(Animation& animation, const std::string& filePath,
 {
     // Get current position before loading (if animation was already positioned)
     sf::Vector2f oldPos = animation.getPosition();
+    
     if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
     {
         return false;
@@ -194,7 +195,16 @@ sf::FloatRect Player::getGlobalBounds() const
 {
     if (currentAnimation) 
     {
-        return currentAnimation->getSprite().getGlobalBounds();
+        // Get the center position of the player
+        sf::Vector2f center = currentAnimation->getPosition();
+        
+        // Calculate custom collision box centered on the player
+        // The box is offset from center: top-left corner is at (center.x - width/2, center.y - height/2)
+        // We offset the Y slightly toward the bottom since feet should be the reference point
+        return sf::FloatRect(
+            sf::Vector2f(center.x - hitboxSizeX / 2.0f, center.y - hitboxSizeY / 2.0f+ 5.0f),
+            sf::Vector2f(static_cast<float>(hitboxSizeX), static_cast<float>(hitboxSizeY))
+        );
     }
     return sf::FloatRect();
 }

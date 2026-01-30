@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 
+
 // In SFML 3.0, Sprite has no default constructor - it needs a texture.
 // We use std::optional to handle this, but the header declares sf::Sprite directly.
 // Solution: Initialize sprite in loadFromFile using placement or reassignment.
