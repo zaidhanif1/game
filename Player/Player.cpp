@@ -3,11 +3,13 @@
 #include <cmath>
 
 Player::Player(float x, float y) 
-    : velocity(0.f, 0.f),
-      onGround(false),
-      currentState(PlayerState::IDLE),
-      facingRight(true),
-      currentAnimation(nullptr)
+    : 
+    position(x, y),
+    velocity(0.f, 0.f),
+    onGround(false),
+    currentState(PlayerState::IDLE),
+    facingRight(true),
+    currentAnimation(nullptr)
 {
 }
 bool Player::loadAllAnimations(const std::string& basePath)
@@ -39,17 +41,14 @@ bool Player::loadAnimation(Animation& animation, const std::string& filePath,
                            unsigned int frameCount, 
                            float fps)
 {
-    // Get current position before loading (if animation was already positioned)
-    sf::Vector2f oldPos = animation.getPosition();
-    
     if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
     {
         return false;
     }
     // Set origin to center of frame for proper flipping
     animation.setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
-    // Adjust position: if old position was top-left, new position (center) should be offset
-    animation.setPosition(sf::Vector2f(oldPos.x + frameSize.x / 2.0f, oldPos.y + frameSize.y / 2.0f));
+    // Position animation at the player's current position
+    animation.setPosition(position);
     
     return true;
 }
@@ -62,12 +61,9 @@ void Player::update(float deltaTime)
         velocity.y += GRAVITY * deltaTime;
     }
     
-    // Get current position (center point, since origin is at center)
-    sf::Vector2f pos = currentAnimation ? currentAnimation->getPosition() : sf::Vector2f(0, 0);
-    
-    // Update position based on velocity
-    pos.x += velocity.x * deltaTime;
-    pos.y += velocity.y * deltaTime;
+    // Update position based on velocity (position is the source of truth)
+    position.x += velocity.x * deltaTime;
+    position.y += velocity.y * deltaTime;
     
     // Handle sprite flipping based on direction (apply to ALL animations for consistency)
     bool newFacingRight = facingRight;
@@ -93,12 +89,11 @@ void Player::update(float deltaTime)
         jumpAnimation.setScale(scale);
     }
     
-    // Update all animation positions (after scale is set, so they all align)
-    // Since origin is at center, position represents the center point
-    idleAnimation.setPosition(pos);
-    walkAnimation.setPosition(pos);
-    runAnimation.setPosition(pos);
-    jumpAnimation.setPosition(pos);
+    // Sync all animation positions with player's position
+    idleAnimation.setPosition(position);
+    walkAnimation.setPosition(position);
+    runAnimation.setPosition(position);
+    jumpAnimation.setPosition(position);
     
     // Reset onGround - collision system will set it to true if player is on a platform
     onGround = false;
@@ -193,37 +188,28 @@ void Player::jump()
 
 sf::FloatRect Player::getGlobalBounds() const 
 {
-    if (currentAnimation) 
-    {
-        // Get the center position of the player
-        sf::Vector2f center = currentAnimation->getPosition();
-        
-        // Calculate custom collision box centered on the player
-        // The box is offset from center: top-left corner is at (center.x - width/2, center.y - height/2)
-        // We offset the Y slightly toward the bottom since feet should be the reference point
-        return sf::FloatRect(
-            sf::Vector2f(center.x - hitboxSizeX / 2.0f, center.y - hitboxSizeY / 2.0f+ 5.0f),
-            sf::Vector2f(static_cast<float>(hitboxSizeX), static_cast<float>(hitboxSizeY))
-        );
-    }
-    return sf::FloatRect();
+    // Calculate custom collision box centered on the player's position
+    // The box is offset from center: top-left corner is at (center.x - width/2, center.y - height/2)
+    // We offset the Y slightly toward the bottom since feet should be the reference point
+    return sf::FloatRect(
+        sf::Vector2f(position.x - (hitboxSizeX / 2.0f), position.y - (hitboxSizeY / 2.0f) + 5.0f),
+        sf::Vector2f(static_cast<float>(hitboxSizeX), static_cast<float>(hitboxSizeY))
+    );
 }
 
 sf::Vector2f Player::getPosition() const 
 {
-    if (currentAnimation) 
-    {
-        return currentAnimation->getPosition();
-    }
-    return sf::Vector2f(0, 0);
+    return position;
 }
 
 void Player::setPosition(const sf::Vector2f& pos) 
 {
-    idleAnimation.setPosition(pos);
-    walkAnimation.setPosition(pos);
-    runAnimation.setPosition(pos);
-    jumpAnimation.setPosition(pos);
+    position = pos;
+    // Sync all animation positions
+    idleAnimation.setPosition(position);
+    walkAnimation.setPosition(position);
+    runAnimation.setPosition(position);
+    jumpAnimation.setPosition(position);
 }
 
 const sf::Sprite& Player::getSprite() const

@@ -83,13 +83,6 @@ int main()
         player.updateAnimation(deltaTime);
         
 
-        sf::FloatRect bounds = player.getGlobalBounds();
-        sf::RectangleShape debugRect(bounds.size);
-        debugRect.setPosition(bounds.position);
-        debugRect.setFillColor(sf::Color::Transparent);
-        debugRect.setOutlineColor(sf::Color::Red);
-        debugRect.setOutlineThickness(1.0f);
-        
         sf::Vector2f playerPos = player.getPosition();
         if (playerPos.x < 0) 
         {
@@ -111,7 +104,6 @@ int main()
         
         // Draw player (automatically uses correct animation based on state)
         window.draw(player.getSprite());
-        window.draw(debugRect);
         
         // display everything
         window.display();

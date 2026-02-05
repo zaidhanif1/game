@@ -84,6 +84,9 @@ public:
     /** @brief Whether the player is currently on the ground */
     bool onGround;
     
+    /** @brief Current position (center point) */
+    sf::Vector2f position;
+    
     /** @brief Current velocity vector (pixels per second) */
     sf::Vector2f velocity;
     
