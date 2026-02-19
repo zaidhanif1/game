@@ -25,6 +25,7 @@ bool Player::loadAllAnimations(const std::string& basePath)
     success &= loadAnimation(jumpAnimation, basePath + "JUMP.png", this->frameSize, 5, 10.0f);
     
     
+    
 
     // Set initial animation
     currentAnimation = &idleAnimation;
@@ -191,7 +192,8 @@ sf::FloatRect Player::getGlobalBounds() const
     // Calculate custom collision box centered on the player's position
     // The box is offset from center: top-left corner is at (center.x - width/2, center.y - height/2)
     // We offset the Y slightly toward the bottom since feet should be the reference point
-    return sf::FloatRect(
+    return sf::FloatRect
+    (
         sf::Vector2f(position.x - (hitboxSizeX / 2.0f), position.y - (hitboxSizeY / 2.0f) + 5.0f),
         sf::Vector2f(static_cast<float>(hitboxSizeX), static_cast<float>(hitboxSizeY))
     );
@@ -212,7 +214,7 @@ void Player::setPosition(const sf::Vector2f& pos)
     jumpAnimation.setPosition(position);
 }
 
-const sf::Sprite& Player::getSprite() const
+const sf::Sprite& Player::getSprite()
 {
     if (currentAnimation) 
     {

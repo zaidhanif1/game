@@ -5,6 +5,7 @@
 #include "Player/Player.h"
 #include "Platform/Platform.h"
 #include "Physics/Collision.h"
+#include "Enemy/Enemy.h"
 #include <iostream>
 
 
@@ -15,11 +16,17 @@ int main()
     sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game");
     window.setFramerateLimit(75);
     // Create player
-    Player player(20, 550);
+    Player player(0, 0);
     // Load all animations once at startup
     if (!player.loadAllAnimations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
+        return -1;
+    }
+    Enemy dragon(0,0, EnemyType::DRAGON);
+    if(!dragon.loadAnimation(EnemyType::DRAGON))
+    {
+        std::cerr << "Failed to load dragon animations!" << std::endl;
         return -1;
     }
     // Create platforms
@@ -68,6 +75,10 @@ int main()
         
         // Update player (position, velocity, etc.)
         player.update(deltaTime);
+
+        //Update enemies
+        dragon.update(deltaTime, EnemyType::DRAGON);
+        
         
         // Check collisions with all platforms
         for (auto& platform : platforms) 
@@ -81,7 +92,7 @@ int main()
         
         // Update the animation AFTER state is determined to avoid flashing
         player.updateAnimation(deltaTime);
-        
+
 
         sf::Vector2f playerPos = player.getPosition();
         if (playerPos.x < 0) 
@@ -104,6 +115,8 @@ int main()
         
         // Draw player (automatically uses correct animation based on state)
         window.draw(player.getSprite());
+        
+        window.draw(dragon.getSprite(EnemyType::DRAGON));
         
         // display everything
         window.display();

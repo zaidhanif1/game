@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include "../Animation/Animation.h"
+#include "../GameObject/GameObject.h"
 
 /**
  * @enum PlayerState
@@ -132,7 +133,7 @@ public:
      * @note Expected files: IDLE.png, WALK.png, RUN.png, JUMP.png
      * @note Sets all animations to loop and starts the idle animation
      */
-    bool loadAllAnimations(const std::string& basePath = "assets/with_outline/");
+    bool loadAllAnimations(const std::string& basePath = "assets/Player/");
     
     /**
      * @brief Loads a single animation with custom parameters
@@ -205,7 +206,7 @@ public:
      * @return Reference to the current animation's sprite
      * @warning Returns idle animation sprite if currentAnimation is null
      */
-    const sf::Sprite& getSprite() const;
+    const sf::Sprite& getSprite();
     
     /**
      * @brief Updates the animation state based on player movement

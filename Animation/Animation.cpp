@@ -34,7 +34,8 @@ bool Animation::loadFromFile(const std::string& filename,
     this->frameTime = 0.0f;
     
     // Create sprite with the loaded texture
-    sprite.emplace(texture);
+    sprite.emplace(texture); // create a sprite object in place instead of copying over another one
+    
     textureLoaded = true;
     updateTextureRect();
     
