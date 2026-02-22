@@ -1,5 +1,7 @@
 #include  "../Animation/Animation.h"
 #include <SFML/Graphics.hpp>
+#include "../GameObject/GameObject.h"
+
 
 enum class EnemyType
 {
@@ -31,15 +33,15 @@ struct Dragon
 
 
 
-class Enemy
+class Enemy : public GameObject
 {
     public:
-        Enemy(float x, float y, EnemyType type);
+        Enemy(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb);
         EnemyType type;
         EnemyState state;
         sf::Vector2f position;
         sf::Vector2f velocity;
-        sf::Vector2u frameSize;
+        sf::Vector2f frameSize;
         Animation idleAnimation;
         Animation attackingAnimation;
         Animation deadAnimation;

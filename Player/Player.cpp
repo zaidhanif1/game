@@ -2,29 +2,21 @@
 #include <iostream>
 #include <cmath>
 
-Player::Player(float x, float y) 
-    : 
-    position(x, y),
-    velocity(0.f, 0.f),
-    onGround(false),
-    currentState(PlayerState::IDLE),
-    facingRight(true),
-    currentAnimation(nullptr)
-{
-}
-bool Player::loadAllAnimations(const std::string& basePath)
+Player::Player(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb) : GameObject(p, v, fs, hb)
+    {
+        this->facing_right = true;
+        this->onGround = false;
+
+    }   
+bool Player::load_all_animations()
 {
     bool success = true;
-    this->frameSize.x = frameSizeX;
-    this->frameSize.y = frameSizeY;
     
     // Load all animations
-    success &= loadAnimation(idleAnimation, basePath + "IDLE.png", this->frameSize, 6, 8.0f);
-    success &= loadAnimation(walkAnimation, basePath + "WALK.png", this->frameSize, 6, 12.0f);
-    success &= loadAnimation(runAnimation, basePath + "RUN.png", this->frameSize, 6, 15.0f);
-    success &= loadAnimation(jumpAnimation, basePath + "JUMP.png", this->frameSize, 5, 10.0f);
-    
-    
+    success &= load_animation(idleAnimation, base_path + "IDLE.png", this->framesize, 6, 8.0f);
+    success &= load_animation(walkAnimation, base_path + "WALK.png", this->framesize, 6, 12.0f);
+    success &= load_animation(runAnimation, base_path + "RUN.png", this->framesize, 6, 15.0f);
+    success &= load_animation(jumpAnimation, base_path + "JUMP.png", this->framesize, 5, 10.0f);
     
 
     // Set initial animation
@@ -37,68 +29,68 @@ bool Player::loadAllAnimations(const std::string& basePath)
     return success;
 }
 
-bool Player::loadAnimation(Animation& animation, const std::string& filePath, 
-                           const sf::Vector2u& frameSize, 
+bool Player::load_animation(Animation& animation, const std::string& filePath, 
+                           const sf::Vector2f& frameSize, 
                            unsigned int frameCount, 
                            float fps)
-{
-    if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
     {
-        return false;
+        if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
+        {
+            return false;
+        }
+        // Set origin to center of frame for proper flipping
+        animation.setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
+        // Position animation at the player's current position
+        animation.setPosition(position);
+        
+        return true;
     }
-    // Set origin to center of frame for proper flipping
-    animation.setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
-    // Position animation at the player's current position
-    animation.setPosition(position);
-    
-    return true;
-}
 
 void Player::update(float deltaTime) 
-{
-    // Apply gravity
-    if (!onGround) 
     {
-        velocity.y += GRAVITY * deltaTime;
-    }
-    
-    // Update position based on velocity (position is the source of truth)
-    position.x += velocity.x * deltaTime;
-    position.y += velocity.y * deltaTime;
-    
-    // Handle sprite flipping based on direction (apply to ALL animations for consistency)
-    bool newFacingRight = facingRight;
-    if (velocity.x > 0.1f) 
-    {
-        newFacingRight = true;
-    } 
-    else if (velocity.x < -0.1f) 
-    {
-        newFacingRight = false;
-    }
-    
-    // Only update scale if direction changed (to avoid constant updates)
-    if (newFacingRight != facingRight) 
-    {
-        facingRight = newFacingRight;
-        sf::Vector2f scale = facingRight ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
+        // Apply gravity
+        if (!onGround) 
+        {
+            velocity.y += GRAVITY * deltaTime;
+        }
         
-        // Apply scale to ALL animations to keep them in sync
-        idleAnimation.setScale(scale);
-        walkAnimation.setScale(scale);
-        runAnimation.setScale(scale);
-        jumpAnimation.setScale(scale);
+        // Update position based on velocity (position is the source of truth)
+        position.x += velocity.x * deltaTime;
+        position.y += velocity.y * deltaTime;
+        
+        // Handle sprite flipping based on direction (apply to ALL animations for consistency)
+        bool new_facing_right = facing_right;
+        if (velocity.x > 0.1f) 
+        {
+            new_facing_right = true;
+        } 
+        else if (velocity.x < -0.1f) 
+        {
+            new_facing_right = false;
+        }
+        
+        // Only update scale if direction changed (to avoid constant updates)
+        if (new_facing_right != facing_right) 
+        {
+            facing_right = new_facing_right;
+            sf::Vector2f scale = facing_right ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
+            
+            // Apply scale to ALL animations to keep them in sync
+            idleAnimation.setScale(scale);
+            walkAnimation.setScale(scale);
+            runAnimation.setScale(scale);
+            jumpAnimation.setScale(scale);
+        }
+        
+        // Sync all animation positions with player's position
+        idleAnimation.setPosition(position);
+        walkAnimation.setPosition(position);
+        runAnimation.setPosition(position);
+        jumpAnimation.setPosition(position);
+        
+        // Reset onGround - collision system will set it to true if player is on a platform
+        onGround = false;
     }
-    
-    // Sync all animation positions with player's position
-    idleAnimation.setPosition(position);
-    walkAnimation.setPosition(position);
-    runAnimation.setPosition(position);
-    jumpAnimation.setPosition(position);
-    
-    // Reset onGround - collision system will set it to true if player is on a platform
-    onGround = false;
-}
 
 
 void Player::updateAnimationState()
@@ -194,8 +186,8 @@ sf::FloatRect Player::getGlobalBounds() const
     // We offset the Y slightly toward the bottom since feet should be the reference point
     return sf::FloatRect
     (
-        sf::Vector2f(position.x - (hitboxSizeX / 2.0f), position.y - (hitboxSizeY / 2.0f) + 5.0f),
-        sf::Vector2f(static_cast<float>(hitboxSizeX), static_cast<float>(hitboxSizeY))
+        sf::Vector2f(position.x - (hit_box_dimensions.x / 2.0f), position.y - (hit_box_dimensions.y / 2.0f) + 5.0f),
+        sf::Vector2f(static_cast<float>(hit_box_dimensions.x), static_cast<float>(hit_box_dimensions.y))
     );
 }
 

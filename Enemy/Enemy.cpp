@@ -1,35 +1,36 @@
 #include "Enemy.h"
 #include "../Player/Player.h"
+#include <stdio.h>
 
-Enemy::Enemy(float x, float y, EnemyType type)
-    : 
-    position(x, y),
-    velocity(0.f, 0.f)
+
+
+
+Enemy::Enemy(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb) : GameObject(p, v, fs, hb)
 {
 
 }
-bool Enemy::loadDragon(struct Dragon& d)
-{
-    bool success = true;
-    d.frameSize.x = 256;
-    d.frameSize.y = 256;
-    d.position.x = 0.f;
-    d.position.y = 0.f;
-    d.onGround = false;
+// bool Enemy::load_dragon(struct Dragon& d)
+// {
+//     bool success = true;
+//     d.frameSize.x = 256;
+//     d.frameSize.y = 256;
+//     d.position.x = 0.f;
+//     d.position.y = 0.f;
+//     d.onGround = false;
 
 
     
-    success &= d.idle.loadFromFile("assets/Enemies/dragon/Idle.png", d.frameSize, 3, 8.0);
-    success &= d.walk.loadFromFile("assets/Enemies/dragon/Walk.png", d.frameSize, 5, 8.0);
-    success &= d.attack.loadFromFile("assets/Enemies/dragon/Attack.png", d.frameSize, 4, 8.0);
-    success &= d.death.loadFromFile("assets/Enemies/dragon/Death.png", d.frameSize, 5, 8.0);
+//     success &= d.idle.loadFromFile("assets/Enemies/dragon/Idle.png", d.frameSize, 3, 8.0);
+//     success &= d.walk.loadFromFile("assets/Enemies/dragon/Walk.png", d.frameSize, 5, 8.0);
+//     success &= d.attack.loadFromFile("assets/Enemies/dragon/Attack.png", d.frameSize, 4, 8.0);
+//     success &= d.death.loadFromFile("assets/Enemies/dragon/Death.png", d.frameSize, 5, 8.0);
     
-    d.current = &d.idle;
-    d.state = EnemyState::IDLE;
+//     d.current = &d.idle;
+//     d.state = EnemyState::IDLE;
 
-    d.idle.play();
-    return success;
-}
+//     d.idle.play();
+//     return success;
+// }
 
 
 bool Enemy::loadAnimation(EnemyType type)
@@ -37,11 +38,7 @@ bool Enemy::loadAnimation(EnemyType type)
     switch(type)
     {
         case EnemyType::DRAGON:
-            if (!loadDragon(dragon))
-            {
-                return false;
-            }
-            return true;
+
     }
     return true;
 }

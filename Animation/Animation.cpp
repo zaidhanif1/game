@@ -17,7 +17,7 @@ Animation::Animation() : frameCount(0), currentFrame(0), fps(5.0f),
 
 // Load texture and set up animation
 bool Animation::loadFromFile(const std::string& filename, 
-                             const sf::Vector2u& frameSize, 
+                             const sf::Vector2f& frameSize, 
                              unsigned int frameCount,
                              float fps) 
 {

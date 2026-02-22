@@ -16,19 +16,14 @@ int main()
     sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game");
     window.setFramerateLimit(75);
     // Create player
-    Player player(0, 0);
+    Player player({0, 0}, {0,0}, {96,70}, {20,40});
     // Load all animations once at startup
-    if (!player.loadAllAnimations()) 
+    if (!player.load_all_animations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
         return -1;
     }
-    Enemy dragon(0,0, EnemyType::DRAGON);
-    if(!dragon.loadAnimation(EnemyType::DRAGON))
-    {
-        std::cerr << "Failed to load dragon animations!" << std::endl;
-        return -1;
-    }
+    
     // Create platforms
     std::vector<Platform> platforms;
     Platform::createPlatforms(platforms);
@@ -76,8 +71,6 @@ int main()
         // Update player (position, velocity, etc.)
         player.update(deltaTime);
 
-        //Update enemies
-        dragon.update(deltaTime, EnemyType::DRAGON);
         
         
         // Check collisions with all platforms
@@ -116,7 +109,6 @@ int main()
         // Draw player (automatically uses correct animation based on state)
         window.draw(player.getSprite());
         
-        window.draw(dragon.getSprite(EnemyType::DRAGON));
         
         // display everything
         window.display();
