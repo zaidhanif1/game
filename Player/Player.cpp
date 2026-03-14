@@ -2,7 +2,9 @@
 #include <iostream>
 #include <cmath>
 
-Player::Player(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb) : GameObject(p, v, fs, hb)
+Player::Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_size, sf::Vector2f hit_box_dimensions) 
+    :
+GameObject(position, velocity, frame_size, hit_box_dimensions)
     {
         this->facing_right = true;
         this->onGround = false;
@@ -46,35 +48,14 @@ bool Player::load_animation(Animation& animation, const std::string& filePath,
         return true;
     }
 
-void Player::update(float deltaTime) 
+void Player::update(float delta_time) 
     {
-        // Apply gravity
-        if (!onGround) 
-        {
-            velocity.y += GRAVITY * deltaTime;
-        }
-        
-        // Update position based on velocity (position is the source of truth)
-        position.x += velocity.x * deltaTime;
-        position.y += velocity.y * deltaTime;
-        
-        // Handle sprite flipping based on direction (apply to ALL animations for consistency)
-        bool new_facing_right = facing_right;
-        if (velocity.x > 0.1f) 
-        {
-            new_facing_right = true;
-        } 
-        else if (velocity.x < -0.1f) 
-        {
-            new_facing_right = false;
-        }
-        
+        bool new_facing_right = GameObject::update(delta_time);
         // Only update scale if direction changed (to avoid constant updates)
-        if (new_facing_right != facing_right) 
+        if (facing_right != new_facing_right) 
         {
             facing_right = new_facing_right;
             sf::Vector2f scale = facing_right ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
-            
             // Apply scale to ALL animations to keep them in sync
             idleAnimation.setScale(scale);
             walkAnimation.setScale(scale);
@@ -88,8 +69,6 @@ void Player::update(float deltaTime)
         runAnimation.setPosition(position);
         jumpAnimation.setPosition(position);
         
-        // Reset onGround - collision system will set it to true if player is on a platform
-        onGround = false;
     }
 
 
@@ -123,12 +102,12 @@ void Player::updateAnimationState()
     }
 }
 
-void Player::updateAnimation(float deltaTime)
+void Player::updateAnimation(float delta_time)
 {
     // Update the current animation - call this AFTER updateAnimationState()
     if (currentAnimation) 
     {
-        currentAnimation->update(deltaTime);
+        currentAnimation->update(delta_time);
     }
 }
 
@@ -191,10 +170,6 @@ sf::FloatRect Player::getGlobalBounds() const
     );
 }
 
-sf::Vector2f Player::getPosition() const 
-{
-    return position;
-}
 
 void Player::setPosition(const sf::Vector2f& pos) 
 {

@@ -47,7 +47,7 @@ class Enemy : public GameObject
         Animation deadAnimation;
 
         struct Dragon dragon;
-        bool loadDragon(struct Dragon& d);
+        bool load_dragon(struct Dragon& d);
         int frameSizeX = 96;
         int frameSizeY = 70;
         const std::string &basePath = "assets/Enemies/";

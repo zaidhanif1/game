@@ -5,6 +5,7 @@
 
 
 
+
 Enemy::Enemy(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb) : GameObject(p, v, fs, hb)
 {
 
@@ -33,44 +34,44 @@ Enemy::Enemy(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb) :
 // }
 
 
-bool Enemy::loadAnimation(EnemyType type)
-{
-    switch(type)
-    {
-        case EnemyType::DRAGON:
+// bool Enemy::loadAnimation(EnemyType type)
+// {
+//     switch(type)
+//     {
+//         case EnemyType::DRAGON:
 
-    }
-    return true;
-}
+//     }
+//     return true;
+// }
 
-void Enemy::update(float deltaTime, EnemyType type)
-{
-    switch (type)
-    {
-        case EnemyType::DRAGON:
-            if (!dragon.onGround)
-            {
-                dragon.velocity.y += GRAVITY * deltaTime;
+// void Enemy::update(float deltaTime, EnemyType type)
+// {
+//     switch (type)
+//     {
+//         case EnemyType::DRAGON:
+//             if (!dragon.onGround)
+//             {
+//                 dragon.velocity.y += GRAVITY * deltaTime;
 
-            }
-            dragon.position.x += dragon.velocity.x * deltaTime;
-            dragon.position.y += dragon.velocity.y * deltaTime;
-            dragon.current->setPosition(position);
-            dragon.current->update(deltaTime);
-            break;
-        default:
-            break;
-    }
-}
+//             }
+//             dragon.position.x += dragon.velocity.x * deltaTime;
+//             dragon.position.y += dragon.velocity.y * deltaTime;
+//             dragon.current->setPosition(position);
+//             dragon.current->update(deltaTime);
+//             break;
+//         default:
+//             break;
+//     }
+// }
 
-const sf::Sprite &Enemy::getSprite(EnemyType type) {
+// const sf::Sprite &Enemy::getSprite(EnemyType type) {
     
-    switch(type)
-    {
-        case EnemyType::DRAGON:
-        {
-            return this->dragon.current->getSprite();
-        }
-    }
+//     switch(type)
+//     {
+//         case EnemyType::DRAGON:
+//         {
+//             return this->dragon.current->getSprite();
+//         }
+//     }
     
-};
+// };

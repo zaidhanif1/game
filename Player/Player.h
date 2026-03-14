@@ -12,11 +12,12 @@ enum class PlayerState
     JUMP,  ///< Player is jumping or in the air
 };
 
+
 class Player : public GameObject
 {
 public:
     
-    Player(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb);
+    Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_size, sf::Vector2f hit_box_dimensions);
     
     Animation idleAnimation;
     Animation walkAnimation;
@@ -26,10 +27,6 @@ public:
 
     PlayerState currentState;
     
-    
-    
-    bool facing_right;
-    bool onGround;
     
     const float WALK_SPEED = 200.0f;
     const float RUN_SPEED = 350.0f;
@@ -44,7 +41,7 @@ public:
     void update(float deltaTime);
     void jump();
     sf::FloatRect getGlobalBounds() const;
-    sf::Vector2f getPosition() const;
+    
     void setPosition(const sf::Vector2f& pos);
     const sf::Sprite& getSprite();
     void updateAnimationState();
