@@ -1,5 +1,8 @@
-.dll
+*.dll
+*.exe
+*.o
+*.obj
 .vscode/
-.json
-.exe
-```
+build/
+CMakeCache.txt
+CMakeFiles/
