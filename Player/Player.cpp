@@ -7,8 +7,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_
 GameObject(position, velocity, frame_size, hit_box_dimensions)
     {
         this->facing_right = true;
+        this->was_facing_right = true;
         this->onGround = false;
-
     }   
 bool Player::load_all_animations()
 {
@@ -48,27 +48,22 @@ bool Player::load_animation(Animation& animation, const std::string& filePath,
         return true;
     }
 
-void Player::update(float delta_time) 
+void Player::onUpdate(float delta_time) 
     {
-        bool new_facing_right = GameObject::update(delta_time);
-        // Only update scale if direction changed (to avoid constant updates)
-        if (facing_right != new_facing_right) 
+        if (facing_right != was_facing_right) 
         {
-            facing_right = new_facing_right;
             sf::Vector2f scale = facing_right ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
-            // Apply scale to ALL animations to keep them in sync
             idleAnimation.setScale(scale);
             walkAnimation.setScale(scale);
             runAnimation.setScale(scale);
             jumpAnimation.setScale(scale);
         }
+        was_facing_right = facing_right;
         
-        // Sync all animation positions with player's position
         idleAnimation.setPosition(position);
         walkAnimation.setPosition(position);
         runAnimation.setPosition(position);
         jumpAnimation.setPosition(position);
-        
     }
 
 
@@ -181,12 +176,22 @@ void Player::setPosition(const sf::Vector2f& pos)
     jumpAnimation.setPosition(position);
 }
 
+void Player::onLateUpdate(float delta_time)
+{
+    updateAnimationState();
+    updateAnimation(delta_time);
+}
+
+void Player::draw(sf::RenderWindow& window)
+{
+    window.draw(getSprite());
+}
+
 const sf::Sprite& Player::getSprite()
 {
     if (currentAnimation) 
     {
         return currentAnimation->getSprite();
     }
-    // fallback to idle if somehow currentAnimation is null
     return idleAnimation.getSprite();
 }

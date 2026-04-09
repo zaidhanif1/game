@@ -2,13 +2,14 @@
 #define GAMEOBJECT_H
 
 #include <SFML/Graphics.hpp>
-#include "../Animation/Animation.h"
 
 
 class GameObject
 {
     public:
         GameObject(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f framesize, sf::Vector2f hit_box_dimensions);
+        virtual ~GameObject() = default;
+
         sf::Vector2f position;
         sf::Vector2f velocity;
         sf::Vector2f framesize;
@@ -16,18 +17,19 @@ class GameObject
         bool onGround;
         bool facing_right;
 
-        //functions
-        bool update(float delta_time);
-        
+        void update(float delta_time);
+        void lateUpdate(float delta_time);
+        virtual void draw(sf::RenderWindow& window);
+
         sf::Vector2f getPosition() const;
+        virtual void setPosition(const sf::Vector2f& pos);
+        virtual sf::FloatRect getGlobalBounds() const;
 
-
-        /* constants */
         const float GRAVITY = 980.f;
 
-
-        private:
-        /* data */
+    protected:
+        virtual void onUpdate(float delta_time);
+        virtual void onLateUpdate(float delta_time);
 };
 
 #endif // GAMEOBJECT_H

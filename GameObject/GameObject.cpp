@@ -10,7 +10,7 @@ GameObject::GameObject(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2
     facing_right = true;
 }
 
-bool GameObject::update(float delta_time)
+void GameObject::update(float delta_time)
 {
     if (!onGround) 
     {
@@ -19,21 +19,51 @@ bool GameObject::update(float delta_time)
     position.x += velocity.x * delta_time;
     position.y += velocity.y * delta_time;
 
-    bool new_facing_right = facing_right;
     if (velocity.x > 0.1f) 
     {
-        new_facing_right = true;
+        facing_right = true;
     } 
     else if (velocity.x < -0.1f) 
     {
-        new_facing_right = false;
+        facing_right = false;
     }
     
     onGround = false;
-    return new_facing_right;
+
+    onUpdate(delta_time);
+}
+
+void GameObject::onUpdate(float delta_time)
+{
+}
+
+void GameObject::lateUpdate(float delta_time)
+{
+    onLateUpdate(delta_time);
+}
+
+void GameObject::onLateUpdate(float delta_time)
+{
+}
+
+void GameObject::draw(sf::RenderWindow& window)
+{
 }
 
 sf::Vector2f GameObject::getPosition() const
 {
     return position;
+}
+
+void GameObject::setPosition(const sf::Vector2f& pos)
+{
+    position = pos;
+}
+
+sf::FloatRect GameObject::getGlobalBounds() const
+{
+    return sf::FloatRect(
+        sf::Vector2f(position.x - (hit_box_dimensions.x / 2.0f), position.y - (hit_box_dimensions.y / 2.0f)),
+        sf::Vector2f(hit_box_dimensions.x, hit_box_dimensions.y)
+    );
 }

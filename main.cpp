@@ -1,118 +1,99 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <string>
 #include <optional>
 #include "Player/Player.h"
 #include "Platform/Platform.h"
 #include "Physics/Collision.h"
-#include "Enemy/Enemy.h"
+#include "GameObject/GameObject.h"
 #include <iostream>
-
 
 
 int main()
 {
-    // Create window
     sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game");
     window.setFramerateLimit(75);
-    // Create player
-    Player player({0, 0}, {0,0}, {96,70}, {20,40});
-    // Load all animations once at startup
-    if (!player.load_all_animations()) 
+
+    Player* player = new Player({0, 0}, {0,0}, {96,70}, {20,40});
+    if (!player->load_all_animations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
+        delete player;
         return -1;
     }
     
-    // Create platforms
+    std::vector<GameObject*> entities;
+    entities.push_back(player);
+
     std::vector<Platform> platforms;
     Platform::createPlatforms(platforms);
     
-    // Collision handler from physics/
     Collision collisionHandler;
-
-    // Clock for delta time
     sf::Clock clock;
     
-    // Enter game loop
-    while ( window.isOpen() )
+    while (window.isOpen())
     {
-        // Calculate delta time
         float deltaTime = clock.restart().asSeconds();
         
-        // Handle close event
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
                 window.close();
         }
         
-        // Handle user input
-        
-        player.velocity.x = 0; // Reset horizontal velocity
+        // Input (Player-specific)
+        player->velocity.x = 0;
         
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left)) 
         {
-            player.velocity.x = -player.RUN_SPEED; 
+            player->velocity.x = -player->RUN_SPEED; 
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) 
         {
-            player.velocity.x = player.RUN_SPEED;
+            player->velocity.x = player->RUN_SPEED;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) || 
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W) ||
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up)) 
         {
-            player.jump();
+            player->jump();
         }
         
-        // Update player (position, velocity, etc.)
-        player.update(deltaTime);
-
+        // Update all entities (physics + onUpdate)
+        for (auto* entity : entities)
+            entity->update(deltaTime);
         
+        // Collision (any entity vs platforms)
+        for (auto* entity : entities)
+            for (auto& platform : platforms)
+                collisionHandler.handleCollision(*entity, platform);
         
-        // Check collisions with all platforms
-        for (auto& platform : platforms) 
-        {
-            collisionHandler.handleCollision(player, platform);
-        }
-        
-        // Update animation state AFTER collision detection
-        // This ensures onGround is correctly set before determining animation
-        player.updateAnimationState();
-        
-        // Update the animation AFTER state is determined to avoid flashing
-        player.updateAnimation(deltaTime);
-
-
-        sf::Vector2f playerPos = player.getPosition();
+        // Boundary clamping (Player-specific for now)
+        sf::Vector2f playerPos = player->getPosition();
         if (playerPos.x < 0) 
-        {
-            player.setPosition(sf::Vector2f(0, playerPos.y));
-        }
+            player->setPosition(sf::Vector2f(0, playerPos.y));
         if (playerPos.x > 800) 
-        {
-            player.setPosition(sf::Vector2f(800, playerPos.y));
-        }
+            player->setPosition(sf::Vector2f(800, playerPos.y));
+
+        // Late update (post-collision: animation state, etc.)
+        for (auto* entity : entities)
+            entity->lateUpdate(deltaTime);
         
-        // Clear screen
-        window.clear(sf::Color(135, 206, 235)); // Random blue sky blue background (need to change to var later)
-         
-        // Draw platforms
-        for (auto& platform : platforms) 
-        {
+        // Render
+        window.clear(sf::Color(135, 206, 235));
+        
+        for (auto& platform : platforms)
             window.draw(platform.shape);
-        }
         
-        // Draw player (automatically uses correct animation based on state)
-        window.draw(player.getSprite());
+        for (auto* entity : entities)
+            entity->draw(window);
         
-        
-        // display everything
         window.display();
     }
+    
+    for (auto* entity : entities)
+        delete entity;
     
     return 0;
 }

@@ -18,6 +18,7 @@ class Player : public GameObject
 public:
     
     Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_size, sf::Vector2f hit_box_dimensions);
+    ~Player() = default;
     
     Animation idleAnimation;
     Animation walkAnimation;
@@ -26,7 +27,7 @@ public:
     Animation* currentAnimation;
 
     PlayerState currentState;
-    
+    bool was_facing_right;
     
     const float WALK_SPEED = 200.0f;
     const float RUN_SPEED = 350.0f;
@@ -38,15 +39,19 @@ public:
                        unsigned int frameCount, 
                        float fps);
     
-    void update(float deltaTime);
     void jump();
-    sf::FloatRect getGlobalBounds() const;
+    sf::FloatRect getGlobalBounds() const override;
     
-    void setPosition(const sf::Vector2f& pos);
+    void setPosition(const sf::Vector2f& pos) override;
+    void draw(sf::RenderWindow& window) override;
     const sf::Sprite& getSprite();
-    void updateAnimationState();
-    void updateAnimation(float deltaTime);
     
+protected:
+    void onUpdate(float delta_time) override;
+    void onLateUpdate(float delta_time) override;
+
 private:
     void setAnimation(PlayerState newState);
+    void updateAnimationState();
+    void updateAnimation(float deltaTime);
 };
