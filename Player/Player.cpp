@@ -6,9 +6,8 @@ Player::Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_
     :
 GameObject(position, velocity, frame_size, hit_box_dimensions)
     {
-        this->facing_right = true;
         this->was_facing_right = true;
-        this->onGround = false;
+        this->currentState = PlayerState::IDLE;
     }   
 bool Player::load_all_animations()
 {
@@ -23,7 +22,6 @@ bool Player::load_all_animations()
 
     // Set initial animation
     currentAnimation = &idleAnimation;
-    currentState = PlayerState::IDLE;
     
     // Start the idle animation
     idleAnimation.play();

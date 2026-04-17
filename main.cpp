@@ -36,8 +36,10 @@ int main()
         
         while (const std::optional event = window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
+            if (event->is<sf::Event::Closed>()) 
+            {
                 window.close();
+            }
         }
         
         // Input (Player-specific)
@@ -62,38 +64,56 @@ int main()
         
         // Update all entities (physics + onUpdate)
         for (auto* entity : entities)
+        {
             entity->update(deltaTime);
+        }
         
         // Collision (any entity vs platforms)
         for (auto* entity : entities)
+        {
             for (auto& platform : platforms)
+            {
                 collisionHandler.handleCollision(*entity, platform);
+            }
+        }
         
         // Boundary clamping (Player-specific for now)
         sf::Vector2f playerPos = player->getPosition();
         if (playerPos.x < 0) 
+        {
             player->setPosition(sf::Vector2f(0, playerPos.y));
+        }
         if (playerPos.x > 800) 
+        {
             player->setPosition(sf::Vector2f(800, playerPos.y));
+        }
 
         // Late update (post-collision: animation state, etc.)
         for (auto* entity : entities)
+        {
             entity->lateUpdate(deltaTime);
+        }
         
         // Render
         window.clear(sf::Color(135, 206, 235));
         
         for (auto& platform : platforms)
+        {
             window.draw(platform.shape);
+        }
         
         for (auto* entity : entities)
+        {
             entity->draw(window);
+        }
         
         window.display();
     }
     
     for (auto* entity : entities)
+    {
         delete entity;
+    }
     
     return 0;
 }

@@ -16,29 +16,27 @@ enum class EnemyState
     DEAD
 };
 
-struct Dragon
-{
-    sf::Vector2f position;
-    sf::Vector2f velocity;
-    Animation idle;
-    Animation walk;
-    Animation attack;
-    Animation death;
-    sf::Vector2u frameSize;
-    Animation* current;
-    EnemyState state;
-    bool onGround;
+// struct Dragon
+// {
+//     sf::Vector2f position;
+//     sf::Vector2f velocity;
+//     Animation idle;
+//     Animation walk;
+//     Animation attack;
+//     Animation death;
+//     sf::Vector2u frameSize;
+//     Animation* current;
+//     EnemyState state;
+//     bool onGround;
     
-};
+// };
 
 
 
 class Enemy : public GameObject
 {
     public:
-        Enemy(sf::Vector2f p, sf::Vector2f v, sf::Vector2f fs, sf::Vector2f hb);
-        EnemyType type;
-        EnemyState state;
+        Enemy(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_size, sf::Vector2f hit_box_dimensions);
         sf::Vector2f position;
         sf::Vector2f velocity;
         sf::Vector2f frameSize;
@@ -46,7 +44,6 @@ class Enemy : public GameObject
         Animation attackingAnimation;
         Animation deadAnimation;
 
-        struct Dragon dragon;
         bool load_dragon(struct Dragon& d);
         int frameSizeX = 96;
         int frameSizeY = 70;
