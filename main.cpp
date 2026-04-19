@@ -5,6 +5,7 @@
 #include "Platform/Platform.h"
 #include "Physics/Collision.h"
 #include "GameObject/GameObject.h"
+#include "Enemy/Dragon.h"
 #include <iostream>
 
 
@@ -14,15 +15,24 @@ int main()
     window.setFramerateLimit(75);
 
     Player* player = new Player({0, 0}, {0,0}, {96,70}, {20,40});
+    Dragon* dragon = new Dragon({0, 0}, {0,0}, {96,70}, {20,40});
     if (!player->load_all_animations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;
         delete player;
         return -1;
     }
+    if (!dragon->load_dragon_animations()) 
+    {
+        std::cerr << "Failed to load dragon animations!" << std::endl;
+        delete dragon;
+        return -1;
+    }
+    
     
     std::vector<GameObject*> entities;
     entities.push_back(player);
+    entities.push_back(dragon);
 
     std::vector<Platform> platforms;
     Platform::createPlatforms(platforms);

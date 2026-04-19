@@ -1,3 +1,4 @@
+#pragma once
 #include  "../Animation/Animation.h"
 #include <SFML/Graphics.hpp>
 #include "../GameObject/GameObject.h"
@@ -9,12 +10,7 @@ enum class EnemyType
     DEMON,
     MEDUSA
 };
-enum class EnemyState
-{
-    IDLE,
-    ATTACKING,
-    DEAD
-};
+
 
 // struct Dragon
 // {

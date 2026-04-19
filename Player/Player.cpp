@@ -6,7 +6,7 @@ Player::Player(sf::Vector2f position, sf::Vector2f velocity, sf::Vector2f frame_
     :
 GameObject(position, velocity, frame_size, hit_box_dimensions)
     {
-        this->was_facing_right = true;
+        this->player_facing_right = true;
         this->currentState = PlayerState::IDLE;
     }   
 bool Player::load_all_animations()
@@ -14,11 +14,12 @@ bool Player::load_all_animations()
     bool success = true;
     
     // Load all animations
-    success &= load_animation(idleAnimation, base_path + "IDLE.png", this->framesize, 6, 8.0f);
-    success &= load_animation(walkAnimation, base_path + "WALK.png", this->framesize, 6, 12.0f);
-    success &= load_animation(runAnimation, base_path + "RUN.png", this->framesize, 6, 15.0f);
-    success &= load_animation(jumpAnimation, base_path + "JUMP.png", this->framesize, 5, 10.0f);
-    
+    success &= idleAnimation.loadFromFile(base_path + "IDLE.png", this->framesize, 6, 8.0f, this->position);
+    success &= walkAnimation.loadFromFile(base_path + "WALK.png", this->framesize, 6, 8.0f, this->position);
+    success &= runAnimation.loadFromFile(base_path + "RUN.png", this->framesize, 6, 8.0f, this->position);
+    success &= jumpAnimation.loadFromFile(base_path + "JUMP.png", this->framesize, 5, 8.0f, this->position);
+
+    if (!success) return false;
 
     // Set initial animation
     currentAnimation = &idleAnimation;
@@ -29,26 +30,10 @@ bool Player::load_all_animations()
     return success;
 }
 
-bool Player::load_animation(Animation& animation, const std::string& filePath, 
-                           const sf::Vector2f& frameSize, 
-                           unsigned int frameCount, 
-                           float fps)
-    {
-        if (!animation.loadFromFile(filePath, frameSize, frameCount, fps)) 
-        {
-            return false;
-        }
-        // Set origin to center of frame for proper flipping
-        animation.setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
-        // Position animation at the player's current position
-        animation.setPosition(position);
-        
-        return true;
-    }
 
 void Player::onUpdate(float delta_time) 
     {
-        if (facing_right != was_facing_right) 
+        if (player_facing_right != facing_right) 
         {
             sf::Vector2f scale = facing_right ? sf::Vector2f(1.0f, 1.0f) : sf::Vector2f(-1.0f, 1.0f);
             idleAnimation.setScale(scale);
@@ -56,7 +41,7 @@ void Player::onUpdate(float delta_time)
             runAnimation.setScale(scale);
             jumpAnimation.setScale(scale);
         }
-        was_facing_right = facing_right;
+        player_facing_right = facing_right;
         
         idleAnimation.setPosition(position);
         walkAnimation.setPosition(position);

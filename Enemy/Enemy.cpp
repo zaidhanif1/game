@@ -36,15 +36,7 @@ GameObject(position, velocity, frame_size, hit_box_dimensions)
 // }
 
 
-// bool Enemy::loadAnimation(EnemyType type)
-// {
-//     switch(type)
-//     {
-//         case EnemyType::DRAGON:
 
-//     }
-//     return true;
-// }
 
 // void Enemy::update(float deltaTime, EnemyType type)
 // {

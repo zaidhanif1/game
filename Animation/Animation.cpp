@@ -17,9 +17,10 @@ Animation::Animation() : frameCount(0), currentFrame(0), fps(5.0f),
 
 // Load texture and set up animation
 bool Animation::loadFromFile(const std::string& filename, 
-                             const sf::Vector2f& frameSize, 
-                             unsigned int frameCount,
-                             float fps) 
+                            const sf::Vector2f& frameSize, 
+                            unsigned int frameCount,
+                            float fps,
+                            sf::Vector2f position) 
 {
     if (!texture.loadFromFile(filename)) 
     {
@@ -32,12 +33,14 @@ bool Animation::loadFromFile(const std::string& filename,
     this->fps = fps;
     this->currentFrame = 0;
     this->frameTime = 0.0f;
-    
     // Create sprite with the loaded texture
-    sprite.emplace(texture); // create a sprite object in place instead of copying over another one
+    sprite.emplace(texture);
     
     textureLoaded = true;
     updateTextureRect();
+
+    sprite->setOrigin(sf::Vector2f(frameSize.x / 2.0f, frameSize.y / 2.0f));
+    sprite->setPosition(position);
     
     return true;
 }

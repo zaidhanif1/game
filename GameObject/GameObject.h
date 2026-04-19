@@ -28,6 +28,7 @@ class GameObject
         const float GRAVITY = 980.f;
 
     protected:
+        //player class overrides
         virtual void onUpdate(float delta_time);
         virtual void onLateUpdate(float delta_time);
 };

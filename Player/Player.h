@@ -27,18 +27,13 @@ public:
     Animation* currentAnimation;
 
     PlayerState currentState;
-    bool was_facing_right;
+    bool player_facing_right;
     
     const float WALK_SPEED = 200.0f;
     const float RUN_SPEED = 350.0f;
     const std::string base_path = "assets/Player/";
     
     bool load_all_animations();
-    bool load_animation(Animation& anim, const std::string& filePath, 
-                       const sf::Vector2f& frameSize, 
-                       unsigned int frameCount, 
-                       float fps);
-    
     void jump();
     sf::FloatRect getGlobalBounds() const override;
     

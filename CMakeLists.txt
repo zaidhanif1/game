@@ -21,6 +21,7 @@ add_executable(KnightsQuest
     Platform/Platform.cpp
     Physics/Collision.cpp
     Enemy/Enemy.cpp
+    Enemy/Dragon.cpp
 )
 
 target_include_directories(KnightsQuest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

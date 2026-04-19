@@ -12,7 +12,8 @@ public:
     bool loadFromFile(const std::string& filename, 
                       const sf::Vector2f& frameSize, 
                       unsigned int frameCount,
-                      float fps = 10.0f);
+                      float fps,
+                      sf::Vector2f position);
 
     void update(float deltaTime);
     void setFrame(unsigned int frame);
