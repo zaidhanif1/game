@@ -92,10 +92,6 @@ void Player::updateAnimation(float delta_time)
 void Player::setAnimation(PlayerState newState)
 {
     // don't do anything if already in this state
-    if (newState == currentState) 
-    {
-        return;
-    }
     
     currentState = newState;
     

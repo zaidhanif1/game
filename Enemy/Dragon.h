@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Window.hpp>
 #include "Enemy.h"
 #include "../GameObject/GameObject.h"
 #include "../Animation/Animation.h"
 
 #define DRAGON_IDLE_FRAME_COUNT 3
+
 enum class DragonState
 {
     DRAGON_IDLE,
@@ -21,10 +23,18 @@ class Dragon : public Enemy
         DragonState dragon_state;
         bool dragon_facing_right;
         bool load_dragon_animations();
-
+        void draw(sf::RenderWindow& window);
+        void onLateUpdate(float delta_time);
+        
         Animation dragon_attack;
         Animation dragon_idle;
         Animation dragon_run;
         Animation dragon_death;
+        Animation* curr_animation;
+        
+        private:
+            void updateAnimation(float delta_time);
+            void setDragonState(DragonState state);
+            void updateDragonAnimationState();
 
 };
