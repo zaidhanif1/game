@@ -23,8 +23,9 @@ class Dragon : public Enemy
         DragonState dragon_state;
         bool dragon_facing_right;
         bool load_dragon_animations();
-        void draw(sf::RenderWindow& window);
-        void onLateUpdate(float delta_time);
+        void draw(sf::RenderWindow& window) override;
+        void onLateUpdate(float delta_time) override;
+        void setPosition(const sf::Vector2f& pos) override;
         
         Animation dragon_attack;
         Animation dragon_idle;
@@ -32,9 +33,12 @@ class Dragon : public Enemy
         Animation dragon_death;
         Animation* curr_animation;
         
-        private:
-            void updateAnimation(float delta_time);
-            void setDragonState(DragonState state);
-            void updateDragonAnimationState();
+    protected:
+        void onUpdate(float delta_time) override;
+
+    private:
+        void updateAnimation(float delta_time);
+        void setDragonAnimationState(DragonState state);
+        void updateDragonAnimationState();
 
 };

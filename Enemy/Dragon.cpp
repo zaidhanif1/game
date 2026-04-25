@@ -14,7 +14,7 @@ bool Dragon::load_dragon_animations()
 {   
     bool success = true;
 
-    success &= this->dragon_idle.loadFromFile(base_path + "Idle.png", this->framesize, DRAGON_IDLE_FRAME_COUNT, 8.0, this->position);
+    success &= this->dragon_idle.loadFromFile(base_path + "Idle.png", this->framesize, DRAGON_IDLE_FRAME_COUNT, 7.0, this->position);
 
     if (!success) return false;
 
@@ -34,6 +34,23 @@ void Dragon::draw(sf::RenderWindow& window)
     window.draw(dragon_idle.getSprite());    
 }
 
+void Dragon::setPosition(const sf::Vector2f& pos)
+{
+    position = pos;
+    dragon_idle.setPosition(position);
+    dragon_attack.setPosition(position);
+    dragon_run.setPosition(position);
+    dragon_death.setPosition(position);
+}
+
+void Dragon::onUpdate(float delta_time)
+{
+    dragon_idle.setPosition(position);
+    dragon_attack.setPosition(position);
+    dragon_run.setPosition(position);
+    dragon_death.setPosition(position);
+}
+
 void Dragon::onLateUpdate(float delta_time)
 {
     updateDragonAnimationState();
@@ -43,7 +60,7 @@ void Dragon::onLateUpdate(float delta_time)
 void Dragon::updateDragonAnimationState()
 {
     DragonState currstate = dragon_state;
-    setDragonState(currstate);
+    setDragonAnimationState(currstate);
 
 }
 
@@ -54,7 +71,7 @@ void Dragon::updateAnimation(float delta_time)
         curr_animation->update(delta_time);
     }
 }
-void Dragon::setDragonState(DragonState state)
+void Dragon::setDragonAnimationState(DragonState state)
 {
     
     switch(state)

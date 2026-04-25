@@ -12,10 +12,10 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(sf::Vector2u(800, 600)), "SFML Game");
-    window.setFramerateLimit(75);
+    window.setFramerateLimit(60);
 
-    Player* player = new Player({0, 0}, {0,0}, {96,70}, {20,40});
-    Dragon* dragon = new Dragon({0, 0}, {0,0}, {96,70}, {20,40});
+    Player* player = new Player({1, 1}, {1,1}, {96,70}, {20,40});
+    Dragon* dragon = new Dragon({150, 150}, {1,1}, {256,256}, {100,100});
     if (!player->load_all_animations()) 
     {
         std::cerr << "Failed to load player animations!" << std::endl;

@@ -164,6 +164,7 @@ void Player::onLateUpdate(float delta_time)
 void Player::draw(sf::RenderWindow& window)
 {
     window.draw(getSprite());
+    return;
 }
 
 const sf::Sprite& Player::getSprite()
